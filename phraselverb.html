@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flashcard: 100+ Phrasal Verb (Có Âm Thanh & IPA)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Quicksand', sans-serif;
+        }
+        .title-gradient {
+            background: -webkit-linear-gradient(45deg, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        /* Flashcard Styles */
+        .flashcard-scene {
+            perspective: 1000px;
+            cursor: pointer;
+        }
+        .flashcard {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transition: transform 0.8s;
+            transform-style: preserve-3d;
+        }
+        .flashcard-scene.is-flipped .flashcard {
+            transform: rotateY(180deg);
+        }
+        .flashcard-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden; /* Safari */
+            backface-visibility: hidden;
+            border-radius: 0.75rem; /* 12px */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 1.5rem; /* 24px */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .card-front {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+        }
+        .card-back {
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+            transform: rotateY(180deg);
+            justify-content: flex-start;
+            align-items: flex-start;
+        }
+        .ipa {
+            font-family: 'Courier New', Courier, monospace;
+            color: #64748b; /* slate-500 */
+        }
+        .speaker-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.25rem;
+            margin-left: 0.5rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 9999px;
+            transition: background-color 0.2s;
+        }
+        .speaker-btn:hover {
+            background-color: rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800">
+
+    <div class="container mx-auto p-4 sm:p-8">
+        
+        <!-- Header -->
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold mb-2 title-gradient">
+                Flashcard Phrasal Verbs
+            </h1>
+            <p class="text-slate-600 max-w-3xl mx-auto">
+                Nhấn vào thẻ để lật. Nhấn nút loa 🔊 để nghe phát âm.
+            </p>
+        </header>
+
+        <!-- Dynamic Content will be injected here by JavaScript -->
+        <div id="phrasal-verb-container"></div>
+
+        <!-- Footer -->
+        <footer class="text-center mt-12 text-slate-500">
+            <p>Chúc bạn học tốt và đạt được mục tiêu 900+!</p>
+        </footer>
+    </div>
+
+<script>
+    const phrasalVerbsData = [
+        {
+            group: 'Ask', color: 'emerald',
+            verbs: [
+                { en: 'Ask out', vi: 'Mời ai đó đi chơi (hẹn hò)', emoji: '❤️', ipa: '/ɑːsk aʊt/', ex_en: 'He\'s too shy to ask her out.', ex_vi: 'Anh ấy quá nhút nhát để mời cô ấy đi chơi.' },
+                { en: 'Ask around', vi: 'Hỏi nhiều người', emoji: '🗣️', ipa: '/ɑːsk əˈraʊnd/', ex_en: 'I\'ll ask around to see if anyone found your phone.', ex_vi: 'Tôi sẽ hỏi mọi người xem có ai tìm thấy điện thoại của bạn không.' },
+            ]
+        },
+        {
+            group: 'Break', color: 'red',
+            verbs: [
+                { en: 'Break down', vi: 'Hỏng hóc / Suy sụp', emoji: '💻', ipa: '/breɪk daʊn/', ex_en: 'My laptop broke down right before the deadline.', ex_vi: 'Laptop của tôi bị hỏng ngay trước hạn chót.' },
+                { en: 'Break up', vi: 'Chia tay', emoji: '💔', ipa: '/breɪk ʌp/', ex_en: 'My favorite band broke up last year.', ex_vi: 'Ban nhạc yêu thích của tôi đã tan rã vào năm ngoái.' },
+                { en: 'Break into', vi: 'Đột nhập', emoji: '🔓', ipa: '/breɪk ˈɪntuː/', ex_en: 'Someone tried to break into my car.', ex_vi: 'Ai đó đã cố đột nhập vào xe của tôi.' },
+                { en: 'Break out', vi: 'Bùng nổ (dịch bệnh, chiến tranh)', emoji: '🌋', ipa: '/breɪk aʊt/', ex_en: 'The pandemic broke out unexpectedly.', ex_vi: 'Đại dịch đã bùng phát một cách bất ngờ.' },
+            ]
+        },
+        {
+            group: 'Bring', color: 'fuchsia',
+            verbs: [
+                { en: 'Bring up', vi: 'Nuôi nấng / Đề cập đến', emoji: '👨‍👧', ipa: '/brɪŋ ʌp/', ex_en: 'Don\'t bring up that topic again.', ex_vi: 'Đừng đề cập đến chủ đề đó nữa.' },
+                { en: 'Bring back', vi: 'Gợi nhớ', emoji: '🔄', ipa: '/brɪŋ bæk/', ex_en: 'This old song brings back good memories.', ex_vi: 'Bài hát cũ này gợi lại những kỷ niệm đẹp.' },
+                { en: 'Bring about', vi: 'Gây ra, mang lại', emoji: '✨', ipa: '/brɪŋ əˈbaʊt/', ex_en: 'Social media has brought about huge changes.', ex_vi: 'Mạng xã hội đã mang lại những thay đổi lớn.' },
+            ]
+        },
+        {
+            group: 'Call', color: 'sky',
+            verbs: [
+                { en: 'Call off', vi: 'Hủy bỏ', emoji: '❌', ipa: '/kɔːl ɔːf/', ex_en: 'We had to call off the picnic because of the rain.', ex_vi: 'Chúng tôi phải hủy buổi dã ngoại vì mưa.' },
+                { en: 'Call back', vi: 'Gọi lại', emoji: '📞', ipa: '/kɔːl bæk/', ex_en: 'I\'m busy now, can I call you back?', ex_vi: 'Tôi đang bận, tôi gọi lại cho bạn sau nhé?' },
+                { en: 'Call on', vi: 'Ghé thăm', emoji: '👋', ipa: '/kɔːl ɒn/', ex_en: 'I think I\'ll call on my grandparents this weekend.', ex_vi: 'Tôi nghĩ tôi sẽ ghé thăm ông bà vào cuối tuần này.' },
+            ]
+        },
+        {
+            group: 'Carry', color: 'teal',
+            verbs: [
+                { en: 'Carry on', vi: 'Tiếp tục', emoji: '▶️', ipa: '/ˈkæri ɒn/', ex_en: 'Sorry for the interruption, please carry on.', ex_vi: 'Xin lỗi vì đã làm gián đoạn, xin hãy tiếp tục.' },
+                { en: 'Carry out', vi: 'Tiến hành, thực hiện', emoji: '📋', ipa: '/ˈkæri aʊt/', ex_en: 'The team will carry out the research.', ex_vi: 'Đội sẽ tiến hành nghiên cứu.' },
+            ]
+        },
+        {
+            group: 'Come', color: 'orange',
+            verbs: [
+                { en: 'Come across', vi: 'Tình cờ gặp/thấy', emoji: '🤝', ipa: '/kʌm əˈkrɒs/', ex_en: 'I came across a great coffee shop near my office.', ex_vi: 'Tôi tình cờ thấy một quán cà phê tuyệt vời gần văn phòng.' },
+                { en: 'Come up with', vi: 'Nảy ra (ý tưởng)', emoji: '💡', ipa: '/kʌm ʌp wɪð/', ex_en: 'He came up with a brilliant idea for the project.', ex_vi: 'Anh ấy đã nảy ra một ý tưởng xuất sắc cho dự án.' },
+                { en: 'Come back', vi: 'Quay trở lại', emoji: '↩️', ipa: '/kʌm bæk/', ex_en: 'What time did you come back home last night?', ex_vi: 'Tối qua mấy giờ bạn về nhà?' },
+                { en: 'Come from', vi: 'Đến từ', emoji: '🌍', ipa: '/kʌm frɒm/', ex_en: 'Where do you come from?', ex_vi: 'Bạn đến từ đâu?' },
+            ]
+        },
+        {
+            group: 'Cut', color: 'rose',
+            verbs: [
+                { en: 'Cut down on', vi: 'Cắt giảm', emoji: '📉', ipa: '/kʌt daʊn ɒn/', ex_en: 'I\'m trying to cut down on coffee.', ex_vi: 'Tôi đang cố gắng giảm bớt cà phê.' },
+                { en: 'Cut off', vi: 'Cắt đứt (liên lạc, điện)', emoji: '✂️', ipa: '/kʌt ɔːf/', ex_en: 'He cut me off in the middle of a sentence.', ex_vi: 'Anh ta ngắt lời tôi giữa câu.' },
+            ]
+        },
+        {
+            group: 'Find', color: 'amber',
+            verbs: [
+                { en: 'Find out', vi: 'Tìm ra, phát hiện ra', emoji: '🤔', ipa: '/faɪnd aʊt/', ex_en: 'I need to find out when the movie starts.', ex_vi: 'Tôi cần tìm xem khi nào phim bắt đầu.' },
+            ]
+        },
+        {
+            group: 'Get', color: 'green',
+            verbs: [
+                { en: 'Get up', vi: 'Thức dậy', emoji: '🛌', ipa: '/ɡet ʌp/', ex_en: 'I don\'t like getting up early.', ex_vi: 'Tôi không thích dậy sớm.' },
+                { en: 'Get on/off', vi: 'Lên/Xuống (xe, tàu)', emoji: '🚌', ipa: '/ɡet ɒn/ɔːf/', ex_en: 'Let\'s get on the next bus. We get off at the park.', ex_vi: 'Hãy lên chuyến xe buýt tiếp theo. Chúng ta xuống ở công viên.' },
+                { en: 'Get along with', vi: 'Hòa hợp với', emoji: '🤝', ipa: '/ɡet əˈlɒŋ wɪð/', ex_en: 'I get along with my new roommate.', ex_vi: 'Tôi hòa hợp với bạn cùng phòng mới.' },
+                { en: 'Get away', vi: 'Trốn thoát, đi xa', emoji: '🏞️', ipa: '/ɡet əˈweɪ/', ex_en: 'I need to get away from the city for a weekend.', ex_vi: 'Tôi cần rời thành phố đi đâu đó vào cuối tuần.' },
+                { en: 'Get over', vi: 'Vượt qua (bệnh, cú sốc)', emoji: '😊', ipa: '/ɡet ˈəʊvə(r)/', ex_en: 'It took me a week to get over that cold.', ex_vi: 'Tôi mất một tuần để khỏi trận cảm lạnh đó.' },
+                { en: 'Get by', vi: 'Xoay xở, đủ sống', emoji: '💰', ipa: '/ɡet baɪ/', ex_en: 'My English isn\'t perfect, but I can get by.', ex_vi: 'Tiếng Anh của tôi không hoàn hảo, nhưng tôi có thể xoay xở được.' },
+            ]
+        },
+        {
+            group: 'Give', color: 'pink',
+            verbs: [
+                { en: 'Give up', vi: 'Từ bỏ', emoji: '💪', ipa: '/ɡɪv ʌp/', ex_en: 'Don\'t give up. You can do it!', ex_vi: 'Đừng bỏ cuộc. Bạn có thể làm được!' },
+                { en: 'Give in', vi: 'Nhượng bộ, đầu hàng', emoji: '🏳️', ipa: '/ɡɪv ɪn/', ex_en: 'The kids kept asking for ice cream, and I finally gave in.', ex_vi: 'Bọn trẻ cứ đòi kem và cuối cùng tôi đã nhượng bộ.' },
+                { en: 'Give away', vi: 'Cho đi / Tiết lộ', emoji: '🎁', ipa: '/ɡɪv əˈweɪ/', ex_en: 'She gave away her old clothes to charity.', ex_vi: 'Cô ấy đã cho quần áo cũ của mình để làm từ thiện.' },
+                { en: 'Give back', vi: 'Trả lại', emoji: '🔄', ipa: '/ɡɪv bæk/', ex_en: 'Can you give back my pen when you\'re done?', ex_vi: 'Bạn có thể trả lại bút cho tôi khi dùng xong không?' },
+            ]
+        },
+        {
+            group: 'Go', color: 'indigo',
+            verbs: [
+                { en: 'Go on', vi: 'Tiếp tục / Xảy ra', emoji: '▶️', ipa: '/ɡəʊ ɒn/', ex_en: 'What\'s going on here?', ex_vi: 'Chuyện gì đang xảy ra ở đây vậy?' },
+                { en: 'Go over', vi: 'Xem lại, kiểm tra', emoji: '📝', ipa: '/ɡəʊ ˈəʊvə(r)/', ex_en: 'Let\'s go over the details one more time.', ex_vi: 'Hãy xem lại chi tiết một lần nữa.' },
+                { en: 'Go through', vi: 'Trải qua (khó khăn)', emoji: '🌧️', ipa: '/ɡəʊ θruː/', ex_en: 'She\'s going through a tough time.', ex_vi: 'Cô ấy đang trải qua một thời gian khó khăn.' },
+                { en: 'Go out', vi: 'Đi chơi / Mất điện', emoji: '🌃', ipa: '/ɡəʊ aʊt/', ex_en: 'The lights went out during the storm.', ex_vi: 'Đèn đã tắt trong cơn bão.' },
+                { en: 'Go off', vi: 'Nổ (bom), reo (chuông)', emoji: '⏰', ipa: '/ɡəʊ ɔːf/', ex_en: 'My alarm didn\'t go off this morning.', ex_vi: 'Báo thức của tôi đã không reo sáng nay.' },
+            ]
+        },
+        {
+            group: 'Hold', color: 'stone',
+            verbs: [
+                { en: 'Hold on', vi: 'Chờ máy / Giữ chặt', emoji: '☎️', ipa: '/həʊld ɒn/', ex_en: 'Hold on a second, I\'m almost ready.', ex_vi: 'Chờ một chút, tôi sắp xong rồi.' },
+                { en: 'Hold up', vi: 'Làm trì hoãn', emoji: '⏳', ipa: '/həʊld ʌp/', ex_en: 'Sorry I\'m late, I was held up in traffic.', ex_vi: 'Xin lỗi tôi đến muộn, tôi bị kẹt xe.' },
+            ]
+        },
+        {
+            group: 'Look', color: 'purple',
+            verbs: [
+                { en: 'Look for', vi: 'Tìm kiếm', emoji: '🔍', ipa: '/lʊk fɔː(r)/', ex_en: 'I\'m looking for my glasses.', ex_vi: 'Tôi đang tìm kính của mình.' },
+                { en: 'Look after', vi: 'Chăm sóc', emoji: '❤️', ipa: '/lʊk ˈɑːftə(r)/', ex_en: 'Can you look after my cat this weekend?', ex_vi: 'Bạn có thể chăm sóc con mèo của tôi cuối tuần này không?' },
+                { en: 'Look up', vi: 'Tra cứu', emoji: '📖', ipa: '/lʊk ʌp/', ex_en: 'I had to look up the word in the dictionary.', ex_vi: 'Tôi đã phải tra từ đó trong từ điển.' },
+                { en: 'Look forward to', vi: 'Trông mong, mong đợi', emoji: '🤩', ipa: '/lʊk ˈfɔːwəd tuː/', ex_en: 'I\'m looking forward to the holidays.', ex_vi: 'Tôi đang rất mong chờ kỳ nghỉ.' },
+                { en: 'Look into', vi: 'Điều tra, xem xét', emoji: '🕵️', ipa: '/lʊk ˈɪntuː/', ex_en: 'My boss will look into your complaint.', ex_vi: 'Sếp của tôi sẽ xem xét khiếu nại của bạn.' },
+                { en: 'Look out', vi: 'Coi chừng, cẩn thận', emoji: '⚠️', ipa: '/lʊk aʊt/', ex_en: 'Look out! There\'s a bike coming.', ex_vi: 'Coi chừng! Có một chiếc xe đạp đang tới.' },
+            ]
+        },
+        {
+            group: 'Make', color: 'lime',
+            verbs: [
+                { en: 'Make up', vi: 'Bịa chuyện / Làm hòa / Trang điểm', emoji: '🤥', ipa: '/meɪk ʌp/', ex_en: 'They always make up after an argument.', ex_vi: 'Họ luôn làm hòa sau một cuộc cãi vã.' },
+                { en: 'Make up for', vi: 'Bù đắp cho', emoji: '💝', ipa: '/meɪk ʌp fɔː(r)/', ex_en: 'I\'ll buy you dinner to make up for being late.', ex_vi: 'Tôi sẽ mời bạn bữa tối để bù đắp cho việc đến muộn.' },
+            ]
+        },
+        {
+            group: 'Put', color: 'amber',
+            verbs: [
+                { en: 'Put on', vi: 'Mặc vào', emoji: '🧥', ipa: '/pʊt ɒn/', ex_en: 'Put on a coat, it\'s cold outside.', ex_vi: 'Mặc áo khoác vào, bên ngoài trời lạnh.' },
+                { en: 'Put off', vi: 'Trì hoãn', emoji: '🗓️', ipa: '/pʊt ɔːf/', ex_en: 'Don\'t put off your homework.', ex_vi: 'Đừng trì hoãn bài tập về nhà của bạn.' },
+                { en: 'Put out', vi: 'Dập tắt', emoji: '🔥', ipa: '/pʊt aʊt/', ex_en: 'Please put out your cigarette.', ex_vi: 'Làm ơn hãy dập tắt điếu thuốc của bạn.' },
+                { en: 'Put up with', vi: 'Chịu đựng', emoji: '😤', ipa: '/pʊt ʌp wɪð/', ex_en: 'I can\'t put up with his attitude.', ex_vi: 'Tôi không thể chịu đựng thái độ của anh ta.' },
+                { en: 'Put away', vi: 'Cất đi', emoji: '📦', ipa: '/pʊt əˈweɪ/', ex_en: 'Please put away your clothes.', ex_vi: 'Làm ơn hãy cất quần áo của bạn đi.' },
+            ]
+        },
+        {
+            group: 'Run', color: 'yellow',
+            verbs: [
+                { en: 'Run into', vi: 'Tình cờ gặp', emoji: '👋', ipa: '/rʌn ˈɪntuː/', ex_en: 'I ran into an old friend at the supermarket.', ex_vi: 'Tôi tình cờ gặp một người bạn cũ ở siêu thị.' },
+                { en: 'Run out of', vi: 'Hết, cạn kiệt', emoji: '🥛', ipa: '/rʌn aʊt ɒv/', ex_en: 'Oh no, we\'ve run out of coffee.', ex_vi: 'Ôi không, chúng ta hết cà phê rồi.' },
+                { en: 'Run over', vi: 'Chèn qua, cán qua', emoji: '🚗', ipa: '/rʌn ˈəʊvə(r)/', ex_en: 'Slow down! You almost ran over a dog.', ex_vi: 'Chậm lại! Bạn suýt nữa cán qua một con chó.' },
+            ]
+        },
+        {
+            group: 'Set', color: 'violet',
+            verbs: [
+                { en: 'Set up', vi: 'Thiết lập, thành lập', emoji: '🏢', ipa: '/set ʌp/', ex_en: 'We need to set up a meeting for next week.', ex_vi: 'Chúng ta cần sắp xếp một cuộc họp cho tuần tới.' },
+                { en: 'Set off', vi: 'Khởi hành', emoji: '🚀', ipa: '/set ɔːf/', ex_en: 'What time do we set off tomorrow?', ex_vi: 'Mấy giờ chúng ta khởi hành vào ngày mai?' },
+            ]
+        },
+        {
+            group: 'Take', color: 'cyan',
+            verbs: [
+                { en: 'Take off', vi: 'Cất cánh / Cởi ra / Thành công', emoji: '✈️', ipa: '/teɪk ɔːf/', ex_en: 'Her career really took off after that movie.', ex_vi: 'Sự nghiệp của cô ấy thực sự thành công sau bộ phim đó.' },
+                { en: 'Take after', vi: 'Giống (ai đó)', emoji: '👨‍👦', ipa: '/teɪk ˈɑːftə(r)/', ex_en: 'She takes after her mother.', ex_vi: 'Cô ấy giống mẹ của mình.' },
+                { en: 'Take up', vi: 'Bắt đầu (sở thích)', emoji: '🎨', ipa: '/teɪk ʌp/', ex_en: 'He has taken up jogging.', ex_vi: 'Anh ấy đã bắt đầu chạy bộ.' },
+                { en: 'Take over', vi: 'Tiếp quản', emoji: '👑', ipa: '/teɪk ˈəʊvə(r)/', ex_en: 'The new CEO will take over next month.', ex_vi: 'CEO mới sẽ tiếp quản vào tháng tới.' },
+                { en: 'Take out', vi: 'Mang ra ngoài / Mời đi ăn', emoji: '🥡', ipa: '/teɪk aʊt/', ex_en: 'Let\'s get some take-out food tonight.', ex_vi: 'Tối nay chúng ta hãy mua đồ ăn mang về.' },
+                { en: 'Take back', vi: 'Rút lại (lời nói)', emoji: '⏪', ipa: '/teɪk bæk/', ex_en: 'I take back what I said. I was wrong.', ex_vi: 'Tôi rút lại những gì đã nói. Tôi đã sai.' },
+                { en: 'Take down', vi: 'Ghi chép / Gỡ xuống', emoji: '📝', ipa: '/teɪk daʊn/', ex_en: 'Can you help me take down the decorations?', ex_vi: 'Bạn có thể giúp tôi gỡ đồ trang trí xuống không?' },
+                { en: 'Take apart', vi: 'Tháo rời', emoji: '🔧', ipa: '/teɪk əˈpɑːt/', ex_en: 'He likes to take apart old clocks.', ex_vi: 'Anh ấy thích tháo rời những chiếc đồng hồ cũ.' },
+            ]
+        },
+        {
+            group: 'Turn', color: 'blue',
+            verbs: [
+                { en: 'Turn on/off', vi: 'Bật/Tắt (thiết bị)', emoji: '💡', ipa: '/tɜːn ɒn/ɔːf/', ex_en: 'Please turn off the lights when you leave.', ex_vi: 'Làm ơn hãy tắt đèn khi bạn rời đi.' },
+                { en: 'Turn up/down', vi: 'Vặn lớn/nhỏ (âm thanh)', emoji: '🔊', ipa: '/tɜːn ʌp/daʊn/', ex_en: 'Can you turn the volume down a bit?', ex_vi: 'Bạn có thể vặn nhỏ âm lượng một chút không?' },
+                { en: 'Turn down', vi: 'Từ chối', emoji: '🤫', ipa: '/tɜːn daʊn/', ex_en: 'They turned down my application.', ex_vi: 'Họ đã từ chối đơn xin việc của tôi.' },
+                { en: 'Turn into', vi: 'Biến thành', emoji: '🦋', ipa: '/tɜːn ˈɪntuː/', ex_en: 'Our living room turns into a cinema on weekends.', ex_vi: 'Phòng khách của chúng tôi biến thành rạp chiếu phim vào cuối tuần.' },
+            ]
+        },
+        {
+            group: 'Work', color: 'gray',
+            verbs: [
+                { en: 'Work out', vi: 'Tập thể dục / Tìm ra giải pháp / Diễn ra tốt đẹp', emoji: '🏋️', ipa: '/wɜːk aʊt/', ex_en: 'I hope everything works out for you.', ex_vi: 'Tôi hy vọng mọi chuyện sẽ ổn thỏa với bạn.' },
+            ]
+        }
+    ];
+
+    const container = document.getElementById('phrasal-verb-container');
+    let speech = new SpeechSynthesisUtterance();
+    let voices = [];
+
+    // Function to get voices, which might load asynchronously
+    function populateVoiceList() {
+        voices = window.speechSynthesis.getVoices();
+        // Try to find a voice similar to Samantha
+        let selectedVoice = voices.find(voice => voice.name === 'Google US English') || 
+                            voices.find(voice => voice.lang === 'en-US' && voice.name.includes('Female')) ||
+                            voices.find(voice => voice.lang === 'en-US');
+        speech.voice = selectedVoice;
+    }
+
+    populateVoiceList();
+    if (window.speechSynthesis.onvoiceschanged !== undefined) {
+        window.speechSynthesis.onvoiceschanged = populateVoiceList;
+    }
+
+    // Function to speak text
+    function speakText(textToSpeak) {
+        if (window.speechSynthesis.speaking) {
+            window.speechSynthesis.cancel();
+        }
+        speech.text = textToSpeak;
+        speech.rate = 0.9;
+        speech.pitch = 1;
+        window.speechSynthesis.speak(speech);
+    }
+
+    phrasalVerbsData.forEach(group => {
+        const section = document.createElement('section');
+        section.className = 'mb-12';
+
+        const title = document.createElement('h2');
+        title.className = `text-3xl font-bold text-center mb-8 text-${group.color}-600`;
+        title.innerHTML = `Phrasal Verbs với <span class="uppercase">${group.group}</span>`;
+        section.appendChild(title);
+
+        const grid = document.createElement('div');
+        grid.className = 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6';
+        
+        group.verbs.forEach(verb => {
+            const cardScene = document.createElement('div');
+            cardScene.className = 'flashcard-scene h-60'; // Increased height for IPA
+
+            const cardHTML = `
+                <div class="flashcard">
+                    <div class="flashcard-face card-front">
+                        <span class="text-5xl mb-4">${verb.emoji}</span>
+                        <h3 class="text-3xl font-bold text-slate-800 text-center">${verb.en}</h3>
+                    </div>
+                    <div class="flashcard-face card-back text-left">
+                        <div class="flex items-center w-full">
+                            <h3 class="text-xl font-bold text-${group.color}-600">${verb.en}</h3>
+                            <button class="speaker-btn" data-text-to-speak="${verb.en}. ${verb.ex_en}">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-volume-up-fill" viewBox="0 0 16 16">
+                                    <path d="M11.536 14.01A8.473 8.473 0 0 0 14.026 8a8.473 8.473 0 0 0-2.49-6.01l-.708.707A7.476 7.476 0 0 1 13.025 8c0 2.071-.84 3.946-2.197 5.303l.708.707z"/>
+                                    <path d="M10.121 12.596A6.48 6.48 0 0 0 12.025 8a6.48 6.48 0 0 0-1.904-4.596l-.707.707A5.482 5.482 0 0 1 11.025 8c0 1.46-.563 2.79-1.489 3.89l.707.706z"/>
+                                    <path d="M8.707 11.182A4.486 4.486 0 0 0 10.025 8a4.486 4.486 0 0 0-1.318-3.182L8 5.525A3.489 3.489 0 0 1 9.025 8 3.49 3.49 0 0 1 8 10.475l.707.707zM6.717 3.55A.5.5 0 0 1 7 4v8a.5.5 0 0 1-.812.39L3.825 10.5H1.5A.5.5 0 0 1 1 10V6a.5.5 0 0 1 .5-.5h2.325l2.363-1.89a.5.5 0 0 1 .529-.06z"/>
+                                </svg>
+                            </button>
+                        </div>
+                        <p class="ipa mb-2">${verb.ipa}</p>
+                        <p class="font-semibold text-slate-700 mb-3">${verb.vi}</p>
+                        <div class="text-sm bg-white p-3 rounded-lg w-full mt-auto">
+                            <p class="font-medium">"${verb.ex_en}"</p>
+                            <p class="text-slate-500 italic">"${verb.ex_vi}"</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            cardScene.innerHTML = cardHTML;
+            grid.appendChild(cardScene);
+        });
+
+        section.appendChild(grid);
+        container.appendChild(section);
+    });
+
+    // Add event listeners
+    document.querySelectorAll('.flashcard-scene').forEach(card => {
+        card.addEventListener('click', (e) => {
+            // Only flip if the click is not on the speaker button
+            if (!e.target.closest('.speaker-btn')) {
+                card.classList.toggle('is-flipped');
+            }
+        });
+    });
+
+    document.querySelectorAll('.speaker-btn').forEach(button => {
+        button.addEventListener('click', (e) => {
+            e.stopPropagation(); // Prevent the card from flipping
+            const textToSpeak = e.currentTarget.dataset.textToSpeak;
+            speakText(textToSpeak);
+        });
+    });
+
+</script>
+
+</body>
+</html>
